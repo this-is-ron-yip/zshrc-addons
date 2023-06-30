@@ -5,7 +5,7 @@
 DOCKER_CURRENT="No container is selected"
 declare -a DOCKER_ALL=("my_container")
 DES_title="========================General Command Manual========================"
-DESCRIPTION=("$DES_title")
+DESCRIPTION=("")
 DES_template="
 ------------------------------docker----------------------------------
 SYNOPSIS
@@ -13,7 +13,7 @@ SYNOPSIS
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX70
 \tXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX70
 DESCRIPTION
-\t"
+\t\n"
 #DESCRIPTION+=("$DES_template")
 
 
@@ -149,7 +149,7 @@ DESCRIPTION
 \tIf no operands are given, dockerend stops the CURRENT 
 \tcontainer as selected by dockerset.\n"
 DESCRIPTION+=("$DES_dockerend")
-# Usage: dockerend <optional: container_name / "all">
+
 dockerend() {
 
   if [ -z "$1" ]; then
@@ -171,12 +171,38 @@ dockerend() {
 }
 
 # A function that list all commands and usage
-# DESCRIPTION=("$DES_dockerwake")
-dockerhelp() {
+DES_dockerhelp="
+----------------------------dockerhelp--------------------------------
+SYNOPSIS
+\tdockerhelp [command name]
+DESCRIPTION
+\tFor each operand that names a command in this extension, 
+\tdockerhelp prints the description of the selected 
+\command. 
 
-  for DES in "${DESCRIPTION[@]}"
-  do
-    echo -e "$DES"
-  done | less
+\tIf no operands are given, dockerhelp prints the Full Command
+\tManual of this extension.\n"
+DESCRIPTION+=("$DES_dockerhelp")
+
+DES_lastLine="
+----------------------------------------------------------------------"
+DESCRIPTION+=("$DES_lastLine")
+
+dockerhelp() {
+  
+  if [ -z "$1" ]; then
+    for DES in "${DESCRIPTION[@]}"
+    do
+      echo -e "$DES"
+    done | less
+
+  elif ! [[ "${DESCRIPTION[@]}" =~ "----$1----" ]]; then
+    echo "Command not found"
+
+  else
+    DES_name="DES_$1"
+    eval "echo -e \${$DES_name}"
+    echo "$DSE_lastLine"
+  fi
 
 }
